@@ -2382,6 +2382,241 @@
     });
     </script>
 
+    <section data-tela="notificacoes" class="hidden">
+  <div class="px-5 pt-6 pb-4">
+    <header class="flex items-center justify-between mb-1">
+      <div>
+        <h1 class="font-display text-2xl font-bold text-neutral-900">Notificações</h1>
+        <p class="text-sm text-neutral-500 mt-0.5">3 não lidas</p>
+      </div>
+      <button
+        id="btn-marcar-lidas"
+        class="text-sm font-medium text-marca-700 hover:text-marca-800 active:text-marca-900 transition-colors px-3 py-1.5 rounded-lg hover:bg-marca-50 active:bg-marca-100"
+      >
+        Marcar todas como lidas
+      </button>
+    </header>
+  </div>
+
+  <div id="lista-notificacoes" class="px-5 space-y-3 pb-24">
+  </div>
+
+  <div id="loading-spinner" class="hidden flex justify-center py-6 pb-24">
+    <svg class="animate-spin h-6 w-6 text-marca-400" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+    </svg>
+  </div>
+
+  <script>
+    (function() {
+      const ICONS = {
+        orcamento: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+        pagamento: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
+        agendamento: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+        avaliacao: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+        lembrete: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+        seta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><polyline points="9 18 15 12 9 6"/></svg>`,
+      };
+
+      const NOTIFICACOES_PAGINA_1 = [
+        { id: 1, tipo: 'orcamento', titulo: 'Orçamento recebido', texto: 'Marina Costa enviou um pedido de orçamento para Consultoria em Marketing Digital — Valor estimado: R$ 2.400', timestamp: new Date(Date.now() - 10 * 60 * 1000), lida: false, destino: 'solicitar-orcamento' },
+        { id: 2, tipo: 'pagamento', titulo: 'Pagamento confirmado', texto: 'Pagamento de R$ 1.800,00 referente à Mentoria Executiva foi aprovado via cartão de crédito.', timestamp: new Date(Date.now() - 32 * 60 * 1000), lida: false, destino: 'pagamento-e-checkout' },
+        { id: 3, tipo: 'agendamento', titulo: 'Novo agendamento', texto: 'Ricardo Almeida agendou uma sessão de consultoria para amanhã às 14h.', timestamp: new Date(Date.now() - 45 * 60 * 1000), lida: false, destino: 'agenda-do-profissional' },
+        { id: 4, tipo: 'avaliacao', titulo: 'Avaliação recebida', texto: 'Fernanda Lima avaliou sua consultoria com ⭐ 5 de 5. "Excelente orientação, super recomendo!"', timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), lida: true, destino: 'meu-perfil' },
+        { id: 5, tipo: 'lembrete', titulo: 'Lembrete de compromisso', texto: 'Sessão de mentoria com Carlos Henrique começa em 1 hora — prepare o material.', timestamp: new Date(Date.now() - 2.5 * 60 * 60 * 1000), lida: true, destino: 'agenda-do-profissional' },
+        { id: 6, tipo: 'pagamento', titulo: 'Pagamento confirmado', texto: 'Transferência PIX de R$ 3.500,00 recebida de Juliana Mendes — Plano Empresarial.', timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), lida: true, destino: 'pagamento-e-checkout' },
+        { id: 7, tipo: 'orcamento', titulo: 'Orçamento recebido', texto: 'Pedro Souza solicitou orçamento para Palestra Corporativa (até 200 pessoas).', timestamp: new Date(Date.now() - 7 * 60 * 60 * 1000), lida: true, destino: 'solicitar-orcamento' },
+        { id: 8, tipo: 'avaliacao', titulo: 'Avaliação recebida', texto: 'Ana Beatriz deixou ⭐ 4 de 5 na Mentoria de Carreira. "Conteúdo muito prático."', timestamp: new Date(Date.now() - 22 * 60 * 60 * 1000), lida: true, destino: 'meu-perfil' },
+      ];
+
+      const NOTIFICACOES_PAGINA_2 = [
+        { id: 9, tipo: 'agendamento', titulo: 'Agendamento confirmado', texto: 'Lucas Ferreira confirmou a sessão de amanhã às 10h — Workshop de Liderança.', timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000), lida: true, destino: 'agenda-do-profissional' },
+        { id: 10, tipo: 'lembrete', titulo: 'Lembrete de compromisso', texto: 'Reunião de alinhamento com a equipe E.voi em 30 minutos — sala virtual.', timestamp: new Date(Date.now() - 29 * 60 * 60 * 1000), lida: true, destino: 'agenda-do-profissional' },
+        { id: 11, tipo: 'pagamento', titulo: 'Pagamento confirmado', texto: 'Assinatura mensal de R$ 490,00 processada com sucesso — Plano Individual.', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), lida: true, destino: 'pagamento-e-checkout' },
+        { id: 12, tipo: 'avaliacao', titulo: 'Avaliação recebida', texto: 'Tiago Rocha avaliou com ⭐ 5 de 5: "Transformou a forma como gerencio meu negócio."', timestamp: new Date(Date.now() - 2.5 * 24 * 60 * 60 * 1000), lida: true, destino: 'meu-perfil' },
+        { id: 13, tipo: 'orcamento', titulo: 'Orçamento recebido', texto: 'Empresa Nova Tech solicitou orçamento para treinamento in-company — 30 colaboradores.', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), lida: true, destino: 'solicitar-orcamento' },
+        { id: 14, tipo: 'lembrete', titulo: 'Lembrete de compromisso', texto: 'Hangout ao vivo hoje às 19h — prepare os slides do módulo 3.', timestamp: new Date(Date.now() - 3.5 * 24 * 60 * 60 * 1000), lida: true, destino: 'agenda-do-profissional' },
+        { id: 15, tipo: 'agendamento', titulo: 'Novo agendamento', texto: 'Patrícia Gomes agendou uma sessão de coaching individual para sexta-feira.', timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), lida: true, destino: 'agenda-do-profissional' },
+        { id: 16, tipo: 'pagamento', titulo: 'Pagamento confirmado', texto: 'Boleto de R$ 2.100,00 quitado — Consultoria em Gestão de Projetos.', timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), lida: true, destino: 'pagamento-e-checkout' },
+      ];
+
+      const CORES_TIPO = {
+        orcamento:  { bg: 'bg-blue-50', icone: 'text-blue-600', borda: 'border-l-blue-500' },
+        pagamento:  { bg: 'bg-emerald-50', icone: 'text-emerald-600', borda: 'border-l-emerald-500' },
+        agendamento:{ bg: 'bg-violet-50', icone: 'text-violet-600', borda: 'border-l-violet-500' },
+        avaliacao:  { bg: 'bg-amber-50', icone: 'text-amber-600', borda: 'border-l-amber-500' },
+        lembrete:   { bg: 'bg-rose-50', icone: 'text-rose-600', borda: 'border-l-rose-500' },
+      };
+
+      let todasNotificacoes = [];
+      let paginaAtual = 0;
+      const POR_PAGINA = 8;
+      let carregando = false;
+      let todasCarregadas = false;
+
+      function tempoRelativo(data) {
+        const diffMs = Date.now() - data.getTime();
+        const diffMin = Math.floor(diffMs / 60000);
+        if (diffMin < 1) return 'agora';
+        if (diffMin < 60) return 'há ' + diffMin + ' min';
+        const diffH = Math.floor(diffMin / 60);
+        if (diffH < 24) return 'há ' + diffH + 'h';
+        const diffD = Math.floor(diffH / 24);
+        if (diffD === 1) return 'ontem';
+        if (diffD < 7) return 'há ' + diffD + ' dias';
+        return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+      }
+
+      function criarCardNotificacao(n) {
+        const cores = CORES_TIPO[n.tipo];
+        const naoLida = n.lida ? '' : 'bg-white';
+        const naoLidaTexto = n.lida ? 'text-neutral-600' : 'text-neutral-900 font-medium';
+        const pontoNaoLida = n.lida ? '' : '<span class="w-2 h-2 rounded-full bg-marca-600 inline-block flex-shrink-0 ml-1"></span>';
+        const iconeCorpo = n.lida ? 'text-neutral-400' : cores.icone;
+
+        return `
+          <div
+            class="card notif-item cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] border-l-4 ${cores.borda} ${naoLida}"
+            data-notif-id="${n.id}"
+            data-destino="${n.destino}"
+            role="button"
+            tabindex="0"
+          >
+            <div class="flex items-start gap-3 p-4">
+              <div class="flex-shrink-0 w-10 h-10 rounded-xl ${cores.bg} ${iconeCorpo} flex items-center justify-center mt-0.5">
+                ${ICONS[n.tipo]}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1">
+                  <span class="text-sm ${naoLidaTexto} truncate">${n.titulo}</span>
+                  ${pontoNaoLida}
+                </div>
+                <p class="text-sm text-neutral-500 mt-1 leading-relaxed line-clamp-2">${n.texto}</p>
+                <span class="text-xs text-neutral-400 mt-2 block">${tempoRelativo(n.timestamp)}</span>
+              </div>
+              <div class="flex-shrink-0 text-neutral-300 mt-1">
+                ${ICONS.seta}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderizarPagina(pagina) {
+        const container = document.getElementById('lista-notificacoes');
+        const inicio = pagina * POR_PAGINA;
+        const fatia = todasNotificacoes.slice(inicio, inicio + POR_PAGINA);
+
+        if (fatia.length === 0) {
+          todasCarregadas = true;
+          container.insertAdjacentHTML('beforeend', `
+            <div id="fim-lista" class="text-center py-8 text-neutral-400 text-sm">
+              Todas as notificações foram carregadas
+            </div>
+          `);
+          return;
+        }
+
+        const html = fatia.map(criarCardNotificacao).join('');
+        container.insertAdjacentHTML('beforeend', html);
+
+        fatia.forEach(function(n) {
+          const card = container.querySelector('[data-notif-id="' + n.id + '"]');
+          if (!card) return;
+          card.addEventListener('click', function() {
+            notificacoes_marcarComoLida(n.id);
+            mostrarTela(n.destino);
+          });
+        });
+      }
+
+      function notificacoes_carregarMais() {
+        if (carregando || todasCarregadas) return;
+        carregando = true;
+        const spinner = document.getElementById('loading-spinner');
+        spinner.classList.remove('hidden');
+
+        setTimeout(function() {
+          paginaAtual++;
+          renderizarPagina(paginaAtual);
+          carregando = false;
+          if (paginaAtual * POR_PAGINA >= todasNotificacoes.length) {
+            spinner.classList.add('hidden');
+          }
+        }, 600);
+      }
+
+      function notificacoes_marcarComoLida(id) {
+        const n = todasNotificacoes.find(function(x) { return x.id === id; });
+        if (n) n.lida = true;
+      }
+
+      function atualizarContadorNaoLidas() {
+        const contador = todasNotificacoes.filter(function(n) { return !n.lida; }).length;
+        const subtitle = document.querySelector('[data-tela="notificacoes"] header p');
+        if (subtitle) {
+          if (contador === 0) {
+            subtitle.textContent = 'Todas lidas';
+          } else {
+            subtitle.textContent = contador + ' não lida' + (contador > 1 ? 's' : '');
+          }
+        }
+      }
+
+      document.getElementById('btn-marcar-lidas').addEventListener('click', function() {
+        const naoLidas = todasNotificacoes.filter(function(n) { return !n.lida; });
+        if (naoLidas.length === 0) {
+          toast('Todas as notificações já foram lidas.', 'info');
+          return;
+        }
+        naoLidas.forEach(function(n) { n.lida = true; });
+        document.querySelectorAll('.notif-item').forEach(function(card) {
+          card.classList.remove('bg-white');
+          card.querySelector('span.text-neutral-900') && card.querySelector('span.text-neutral-900').classList.remove('font-medium', 'text-neutral-900');
+          card.querySelector('span.text-neutral-900') && card.querySelector('span.text-neutral-900').classList.add('text-neutral-600');
+          const iconeWrap = card.querySelector('div[class*="rounded-xl"]');
+          const circulo = card.querySelector('span[class*="rounded-full"]');
+          if (circulo) circulo.remove();
+          if (iconeWrap) {
+            iconeWrap.classList.remove('text-blue-600', 'text-emerald-600', 'text-violet-600', 'text-amber-600', 'text-rose-600');
+            iconeWrap.classList.add('text-neutral-400');
+          }
+        });
+        atualizarContadorNaoLidas();
+        toast(naoLidas.length + ' notificação' + (naoLidas.length > 1 ? 'ões' : '') + ' marcada' + (naoLidas.length > 1 ? 's' : '') + ' como lida' + (naoLidas.length > 1 ? 's' : '') + '.', 'ok');
+      });
+
+      let observer = null;
+
+      function notificacoes_init() {
+        todasNotificacoes = NOTIFICACOES_PAGINA_1.concat(NOTIFICACOES_PAGINA_2);
+        paginaAtual = 0;
+        todasCarregadas = false;
+        carregando = false;
+        document.getElementById('lista-notificacoes').innerHTML = '';
+        atualizarContadorNaoLidas();
+        renderizarPagina(0);
+
+        if (observer) observer.disconnect();
+        observer = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting && !carregando && !todasCarregadas) {
+            notificacoes_carregarMais();
+          }
+        }, { rootMargin: '120px' });
+
+        var sentinel = document.createElement('div');
+        sentinel.id = 'scroll-sentinel';
+        sentinel.className = 'h-1';
+        document.getElementById('lista-notificacoes').after(sentinel);
+        observer.observe(sentinel);
+      }
+
+      notificacoes_init();
+    })();
+  </script>
+</section>
+
     <!-- TELAS -->
 
   </main>
