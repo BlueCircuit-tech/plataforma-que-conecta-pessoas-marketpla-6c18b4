@@ -124,6 +124,379 @@
   <!-- Main -->
   <main id="telas" class="flex-1 overflow-y-auto pb-24 bg-neutro-50">
 
+    <section data-tela="catalogo-de-servicos" class="hidden">
+  <div id="catalogo-servicos-conteudo" class="animate-fade-in">
+    <!-- Cabeçalho da Tela -->
+    <div class="px-5 pt-6 pb-3">
+      <h1 class="font-display text-2xl font-bold text-marca-900 leading-tight">Catálogo de Serviços</h1>
+      <p class="text-marca-500 text-sm mt-1 mb-4 font-body">Encontre o profissional ideal para suas necessidades</p>
+
+      <!-- Barra de Busca -->
+      <div class="relative mb-4">
+        <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+          <svg class="w-5 h-5 text-marca-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <input
+          id="catalogo-busca"
+          type="text"
+          placeholder="Buscar por nome, especialidade ou palavra-chave..."
+          class="w-full pl-11 pr-10 py-3 bg-marca-50 border border-marca-200 rounded-xl text-sm font-body text-marca-900 placeholder-marca-400 focus:outline-none focus:ring-2 focus:ring-marca-500 focus:border-transparent transition-all"
+          oninput="catalogo_de_servicos_buscar(this.value)"
+        />
+        <button
+          id="catalogo-filtro-btn"
+          onclick="catalogo_de_servicos_toggleFiltro()"
+          class="absolute inset-y-0 right-2 flex items-center px-2 rounded-lg hover:bg-marca-100 transition-colors"
+          title="Filtros"
+        >
+          <svg class="w-5 h-5 text-marca-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+          </svg>
+          <span id="catalogo-filtro-contador" class="hidden absolute -top-1 -right-1 bg-marca-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">0</span>
+        </button>
+      </div>
+
+      <!-- Chips de Categorias -->
+      <div class="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5 scrollbar-hide" id="catalogo-categorias-container">
+        <button onclick="catalogo_de_servicos_selecionarCategoria('todos')" data-cat="todos" class="catalogo-chip catalogo-chip-ativo shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-marca-900 text-white">Todos</button>
+        <button onclick="catalogo_de_servicos_selecionarCategoria('mentoria')" data-cat="mentoria" class="catalogo-chip shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-marca-100 text-marca-700 hover:bg-marca-200">Mentoria</button>
+        <button onclick="catalogo_de_servicos_selecionarCategoria('consultoria')" data-cat="consultoria" class="catalogo-chip shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-marca-100 text-marca-700 hover:bg-marca-200">Consultoria Estratégica</button>
+        <button onclick="catalogo_de_servicos_selecionarCategoria('design')" data-cat="design" class="catalogo-chip shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-marca-100 text-marca-700 hover:bg-marca-200">Design</button>
+        <button onclick="catalogo_de_servicos_selecionarCategoria('marketing')" data-cat="marketing" class="catalogo-chip shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-marca-100 text-marca-700 hover:bg-marca-200">Marketing Digital</button>
+      </div>
+    </div>
+
+    <!-- Painel de Filtros (colapsável) -->
+    <div id="catalogo-filtros-painel" class="hidden px-5 pb-3">
+      <div class="bg-white rounded-xl border border-marca-200 shadow-sm p-4 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-marca-600 mb-2 font-body uppercase tracking-wide">Avaliação Mínima</label>
+          <div class="flex gap-2">
+            <button onclick="catalogo_de_servicos_filtroAvaliacao(0)" data-av="0" class="catalogo-av-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-900 text-white transition-all">Todas</button>
+            <button onclick="catalogo_de_servicos_filtroAvaliacao(3)" data-av="3" class="catalogo-av-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-100 text-marca-700 hover:bg-marca-200 transition-all">3+ ★</button>
+            <button onclick="catalogo_de_servicos_filtroAvaliacao(4)" data-av="4" class="catalogo-av-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-100 text-marca-700 hover:bg-marca-200 transition-all">4+ ★</button>
+            <button onclick="catalogo_de_servicos_filtroAvaliacao(4.5)" data-av="4.5" class="catalogo-av-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-100 text-marca-700 hover:bg-marca-200 transition-all">4.5+ ★</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-marca-600 mb-2 font-body uppercase tracking-wide">Faixa de Preço (por hora)</label>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="catalogo_de_servicos_filtroPreco('todos')" data-preco="todos" class="catalogo-preco-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-900 text-white transition-all">Todos</button>
+            <button onclick="catalogo_de_servicos_filtroPreco('ate150')" data-preco="ate150" class="catalogo-preco-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-100 text-marca-700 hover:bg-marca-200 transition-all">Até R$ 150</button>
+            <button onclick="catalogo_de_servicos_filtroPreco('150a300')" data-preco="150a300" class="catalogo-preco-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-100 text-marca-700 hover:bg-marca-200 transition-all">R$ 150 – 300</button>
+            <button onclick="catalogo_de_servicos_filtroPreco('acima300')" data-preco="acima300" class="catalogo-preco-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-marca-100 text-marca-700 hover:bg-marca-200 transition-all">Acima de R$ 300</button>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-semibold text-marca-600 font-body uppercase tracking-wide">Apenas disponibilidade imediata</label>
+          <button id="catalogo-toggle-disponibilidade" onclick="catalogo_de_servicos_toggleDisponibilidade()" class="relative w-11 h-6 bg-marca-200 rounded-full transition-colors duration-200" data-ativo="false">
+            <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"></span>
+          </button>
+        </div>
+        <button onclick="catalogo_de_servicos_limparFiltros()" class="w-full py-2 text-sm font-semibold text-marca-600 bg-marca-50 rounded-lg hover:bg-marca-100 transition-colors">Limpar filtros</button>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="px-5 pb-2 flex items-center justify-between">
+      <p id="catalogo-resultados-contador" class="text-xs text-marca-500 font-body">8 profissionais encontrados</p>
+      <button onclick="catalogo_de_servicos_ordenar()" class="text-xs text-marca-600 font-semibold flex items-center gap-1 hover:text-marca-900 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+        </svg>
+        Ordenar
+      </button>
+    </div>
+
+    <!-- Grid de Profissionais -->
+    <div id="catalogo-grid" class="px-5 pb-24 grid grid-cols-2 gap-3">
+      <!-- Cards injetados via JS -->
+    </div>
+
+    <!-- Estado Vazio -->
+    <div id="catalogo-vazio" class="hidden px-5 pb-24">
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <div class="w-20 h-20 bg-marca-100 rounded-full flex items-center justify-center mb-4">
+          <svg class="w-10 h-10 text-marca-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-bold text-marca-800 mb-1">Nenhum profissional encontrado</h3>
+        <p class="text-sm text-marca-500 font-body mb-4">Tente ajustar seus filtros ou busca</p>
+        <button onclick="catalogo_de_servicos_limparFiltros()" class="px-6 py-2.5 bg-marca-900 text-white text-sm font-semibold rounded-xl active:scale-95 transition-all">Limpar filtros</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  'use strict';
+
+  var profissionais = [
+    { id: 1, nome: 'Dr. Ricardo Almeida', especialidade: 'Mentoria de Carreira', categoria: 'mentoria', nota: 4.9, avaliacoes: 127, precoHora: 250, disponivel: true, avatar: 'RA', avatarCor: 'bg-blue-600', bio: 'Mentor com 15 anos de experiência em desenvolvimento de lideranças e planejamento de carreira.', sessoes: 342, descricao: 'Sessões individuais focadas em definição de objetivos profissionais, desenvolvimento de habilidades de liderança e transição de carreira.', tags: ['Carreira', 'Liderança', 'Objetivos'] },
+    { id: 2, nome: 'Dra. Camila Torres', especialidade: 'Consultoria Estratégica', categoria: 'consultoria', nota: 4.8, avaliacoes: 89, precoHora: 350, disponivel: true, avatar: 'CT', avatarCor: 'bg-emerald-600', bio: 'Consultora estratégica com MBA pela FGV e experiência em grandes corporações.', sessoes: 215, descricao: 'Consultoria empresarial com foco em planejamento estratégico, análise de mercado e tomada de decisão.', tags: ['Estratégia', 'Negócios', 'Planejamento'] },
+    { id: 3, nome: 'Fernando Dias', especialidade: 'UI/UX Design', categoria: 'design', nota: 4.7, avaliacoes: 64, precoHora: 200, disponivel: true, avatar: 'FD', avatarCor: 'bg-purple-600', bio: 'Designer especializado em produtos digitais com portfólio em startups de tecnologia.', sessoes: 178, descricao: 'Design de interfaces, pesquisa com usuários, prototipação e design systems para produtos digitais.', tags: ['UI/UX', 'Produto', 'Prototipação'] },
+    { id: 4, nome: 'Marina Costa', especialidade: 'Marketing Digital', categoria: 'marketing', nota: 4.9, avaliacoes: 203, precoHora: 280, disponivel: true, avatar: 'MC', avatarCor: 'bg-rose-600', bio: 'Especialista em growth marketing com resultados comprovados em scale-ups brasileiras.', sessoes: 489, descricao: 'Estratégias de marketing digital, gestão de tráfego pago, SEO, content marketing e analytics.', tags: ['Growth', 'Tráfego', 'SEO'] },
+    { id: 5, nome: 'Dr. Paulo Henrique', especialidade: 'Mentoria Executiva', categoria: 'mentoria', nota: 5.0, avaliacoes: 56, precoHora: 400, disponivel: false, avatar: 'PH', avatarCor: 'bg-indigo-600', bio: 'Executivo C-level com 20 anos de mercado. Mentor de CEOs e diretores.', sessoes: 120, descricao: 'Mentoria executiva para C-level, desenvolvimento de visão estratégica e gestão de equipes de alta performance.', tags: ['Executivo', 'CEO', 'Governança'] },
+    { id: 6, nome: 'Ana Beatriz Souza', especialidade: 'Branding & Design', categoria: 'design', nota: 4.6, avaliacoes: 41, precoHora: 180, disponivel: true, avatar: 'AS', avatarCor: 'bg-pink-600', bio: 'Designer de marca com passagem por agências premiadas internacionalmente.', sessoes: 95, descricao: 'Criação e reposicionamento de marca, identidade visual, manual de marca e guidelines.', tags: ['Branding', 'Identidade', 'Posicionamento'] },
+    { id: 7, nome: 'Carlos Eduardo Lima', especialidade: 'Consultoria Financeira', categoria: 'consultoria', nota: 4.5, avaliacoes: 72, precoHora: 300, disponivel: true, avatar: 'CL', avatarCor: 'bg-teal-600', bio: 'Consultor financeiro especializado em pequenas e médias empresas.', sessoes: 156, descricao: 'Planejamento financeiro, fluxo de caixa, estruturação de capital e valuation.', tags: ['Financeiro', 'Fluxo de Caixa', 'PME'] },
+    { id: 8, nome: 'Juliana Mendes', especialidade: 'Redes Sociais & Conteúdo', categoria: 'marketing', nota: 4.8, avaliacoes: 118, precoHora: 220, disponivel: true, avatar: 'JM', avatarCor: 'bg-amber-600', bio: 'Criadora de conteúdo e estrategista de redes sociais com milhões de seguidores gerenciados.', sessoes: 267, descricao: 'Estratégia de conteúdo, gestão de redes sociais, copywriting e construção de audiência.', tags: ['Social Media', 'Conteúdo', 'Copy'] }
+  ];
+
+  window.catalogo_de_servicos_favoritos = JSON.parse(localStorage.getItem('mkt_favoritos') || '[]');
+  window.catalogo_de_servicos_ordenacao = 'relevancia';
+  window.catalogo_de_servicos_categoria = 'todos';
+  window.catalogo_de_servicos_avaliacaoMin = 0;
+  window.catalogo_de_servicos_precoFaixa = 'todos';
+  window.catalogo_de_servicos_somenteDisponivel = false;
+  window.catalogo_de_servicos_filtrosAbertos = false;
+
+  function catalogo_de_servicos_renderEstrelas(nota) {
+    var estrelas = '';
+    var cheias = Math.floor(nota);
+    var meia = nota - cheias >= 0.5;
+    for (var i = 0; i < cheias; i++) estrelas += '<svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+    if (meia) estrelas += '<svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="#D1D5DB"/></linearGradient></defs><path fill="url(#half)" stroke="currentColor" stroke-width="0.5" d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+    var vazias = 5 - cheias - (meia ? 1 : 0);
+    for (var j = 0; j < vazias; j++) estrelas += '<svg class="w-3.5 h-3.5 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+    return estrelas;
+  }
+
+  function catalogo_de_servicos_ehFavorito(id) {
+    return window.catalogo_de_servicos_favoritos.indexOf(id) !== -1;
+  }
+
+  function catalogo_de_servicos_toggleFavorito(e, id) {
+    e.stopPropagation();
+    var idx = window.catalogo_de_servicos_favoritos.indexOf(id);
+    var profissional = profissionais.find(function(p) { return p.id === id; });
+    if (idx === -1) {
+      window.catalogo_de_servicos_favoritos.push(id);
+      toast(profissional.nome + ' adicionado aos favoritos', 'ok');
+    } else {
+      window.catalogo_de_servicos_favoritos.splice(idx, 1);
+      toast(profissional.nome + ' removido dos favoritos', 'info');
+    }
+    localStorage.setItem('mkt_favoritos', JSON.stringify(window.catalogo_de_servicos_favoritos));
+    catalogo_de_servicos_aplicarFiltros();
+  }
+
+  function catalogo_de_servicos_getFiltrados() {
+    var termo = (document.getElementById('catalogo-busca').value || '').toLowerCase().trim();
+    return profissionais.filter(function(p) {
+      if (window.catalogo_de_servicos_categoria !== 'todos' && p.categoria !== window.catalogo_de_servicos_categoria) return false;
+      if (p.nota < window.catalogo_de_servicos_avaliacaoMin) return false;
+      if (window.catalogo_de_servicos_somenteDisponivel && !p.disponivel) return false;
+      if (window.catalogo_de_servicos_precoFaixa === 'ate150' && p.precoHora > 150) return false;
+      if (window.catalogo_de_servicos_precoFaixa === '150a300' && (p.precoHora < 150 || p.precoHora > 300)) return false;
+      if (window.catalogo_de_servicos_precoFaixa === 'acima300' && p.precoHora <= 300) return false;
+      if (termo) {
+        var textoBusca = (p.nome + ' ' + p.especialidade + ' ' + p.tags.join(' ') + ' ' + p.bio).toLowerCase();
+        if (textoBusca.indexOf(termo) === -1) return false;
+      }
+      return true;
+    }).sort(function(a, b) {
+      if (window.catalogo_de_servicos_ordenacao === 'menor-preco') return a.precoHora - b.precoHora;
+      if (window.catalogo_de_servicos_ordenacao === 'maior-preco') return b.precoHora - a.precoHora;
+      if (window.catalogo_de_servicos_ordenacao === 'maior-nota') return b.nota - a.nota;
+      if (window.catalogo_de_servicos_ordenacao === 'mais-avaliacoes') return b.avaliacoes - a.avaliacoes;
+      return b.sessoes - a.sessoes;
+    });
+  }
+
+  function catalogo_de_servicos_renderCards(lista) {
+    var grid = document.getElementById('catalogo-grid');
+    var vazio = document.getElementById('catalogo-vazio');
+    var contador = document.getElementById('catalogo-resultados-contador');
+    if (!grid) return;
+    contador.textContent = lista.length + ' profissional' + (lista.length !== 1 ? 'is' : '') + ' encontrado' + (lista.length !== 1 ? 's' : '');
+    if (lista.length === 0) {
+      grid.classList.add('hidden');
+      vazio.classList.remove('hidden');
+      return;
+    }
+    grid.classList.remove('hidden');
+    vazio.classList.add('hidden');
+    var html = '';
+    lista.forEach(function(p) {
+      var fav = catalogo_de_servicos_ehFavorito(p.id);
+      var statusHtml = p.disponivel
+        ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Disponível</span>'
+        : '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>Agenda fechada</span>';
+      html += '<div class="card bg-white rounded-xl border border-marca-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" onclick="mostrarTela(\'detalhe-do-profissional\')">' +
+        '<div class="p-3.5">' +
+          '<div class="flex items-start gap-3">' +
+            '<div class="relative shrink-0">' +
+              '<div class="w-12 h-12 ' + p.avatarCor + ' rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">' + p.avatar + '</div>' +
+              (p.disponivel ? '<span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></span>' : '') +
+            '</div>' +
+            '<div class="flex-1 min-w-0">' +
+              '<h3 class="font-display text-sm font-bold text-marca-900 truncate leading-tight">' + p.nome + '</h3>' +
+              '<p class="text-xs text-marca-500 mt-0.5 leading-snug">' + p.especialidade + '</p>' +
+              '<div class="flex items-center gap-1 mt-1">' + catalogo_de_servicos_renderEstrelas(p.nota) + '</div>' +
+            '</div>' +
+            '<button onclick="catalogo_de_servicos_toggleFavorito(event, ' + p.id + ')" class="shrink-0 p-1.5 rounded-lg hover:bg-marca-50 transition-colors active:scale-90" title="Favoritar">' +
+              (fav
+                ? '<svg class="w-5 h-5 text-rose-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
+                : '<svg class="w-5 h-5 text-marca-300 hover:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>'
+              ) +
+            '</button>' +
+          '</div>' +
+          '<div class="mt-3 flex items-center justify-between">' +
+            statusHtml +
+            '<div class="text-right">' +
+              '<span class="text-lg font-bold text-marca-900 font-display">' + brl(p.precoHora) + '</span>' +
+              '<span class="text-[10px] text-marca-500 font-body">/hora</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="mt-3 flex items-center gap-1 text-[10px] text-marca-400">' +
+            '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+            p.avaliacoes + ' avaliações' +
+          '</div>' +
+          '<button onclick="event.stopPropagation(); mostrarTela(\'detalhe-do-profissional\')" class="mt-3 w-full py-2 bg-marca-900 text-white text-xs font-bold rounded-lg active:scale-95 transition-all hover:bg-marca-800">Ver perfil</button>' +
+        '</div>' +
+      '</div>';
+    });
+    grid.innerHTML = html;
+  }
+
+  window.catalogo_de_servicos_buscar = function(valor) {
+    catalogo_de_servicos_aplicarFiltros();
+  };
+
+  window.catalogo_de_servicos_selecionarCategoria = function(cat) {
+    window.catalogo_de_servicos_categoria = cat;
+    document.querySelectorAll('.catalogo-chip').forEach(function(el) {
+      if (el.dataset.cat === cat) {
+        el.classList.remove('bg-marca-100', 'text-marca-700');
+        el.classList.add('bg-marca-900', 'text-white');
+      } else {
+        el.classList.remove('bg-marca-900', 'text-white');
+        el.classList.add('bg-marca-100', 'text-marca-700');
+      }
+    });
+    catalogo_de_servicos_aplicarFiltros();
+  };
+
+  window.catalogo_de_servicos_filtroAvaliacao = function(nota) {
+    window.catalogo_de_servicos_avaliacaoMin = nota;
+    document.querySelectorAll('.catalogo-av-btn').forEach(function(el) {
+      if (parseFloat(el.dataset.av) === nota) {
+        el.classList.remove('bg-marca-100', 'text-marca-700', 'hover:bg-marca-200');
+        el.classList.add('bg-marca-900', 'text-white');
+      } else {
+        el.classList.remove('bg-marca-900', 'text-white');
+        el.classList.add('bg-marca-100', 'text-marca-700');
+      }
+    });
+    catalogo_de_servicos_aplicarFiltros();
+  };
+
+  window.catalogo_de_servicos_filtroPreco = function(faixa) {
+    window.catalogo_de_servicos_precoFaixa = faixa;
+    document.querySelectorAll('.catalogo-preco-btn').forEach(function(el) {
+      if (el.dataset.preco === faixa) {
+        el.classList.remove('bg-marca-100', 'text-marca-700', 'hover:bg-marca-200');
+        el.classList.add('bg-marca-900', 'text-white');
+      } else {
+        el.classList.remove('bg-marca-900', 'text-white');
+        el.classList.add('bg-marca-100', 'text-marca-700');
+      }
+    });
+    catalogo_de_servicos_aplicarFiltros();
+  };
+
+  window.catalogo_de_servicos_toggleDisponibilidade = function() {
+    window.catalogo_de_servicos_somenteDisponivel = !window.catalogo_de_servicos_somenteDisponivel;
+    var btn = document.getElementById('catalogo-toggle-disponibilidade');
+    var circle = btn.querySelector('span');
+    if (window.catalogo_de_servicos_somenteDisponivel) {
+      btn.classList.remove('bg-marca-200');
+      btn.classList.add('bg-marca-600');
+      circle.style.transform = 'translateX(20px)';
+    } else {
+      btn.classList.remove('bg-marca-600');
+      btn.classList.add('bg-marca-200');
+      circle.style.transform = 'translateX(0)';
+    }
+    btn.dataset.ativo = window.catalogo_de_servicos_somenteDisponivel ? 'true' : 'false';
+    catalogo_de_servicos_aplicarFiltros();
+  };
+
+  window.catalogo_de_servicos_toggleFiltro = function() {
+    window.catalogo_de_servicos_filtrosAbertos = !window.catalogo_de_servicos_filtrosAbertos;
+    var painel = document.getElementById('catalogo-filtros-painel');
+    var contador = document.getElementById('catalogo-filtro-contador');
+    if (window.catalogo_de_servicos_filtrosAbertos) {
+      painel.classList.remove('hidden');
+      painel.classList.add('animate-fade-in');
+    } else {
+      painel.classList.add('hidden');
+    }
+    var ativos = 0;
+    if (window.catalogo_de_servicos_categoria !== 'todos') ativos++;
+    if (window.catalogo_de_servicos_avaliacaoMin > 0) ativos++;
+    if (window.catalogo_de_servicos_precoFaixa !== 'todos') ativos++;
+    if (window.catalogo_de_servicos_somenteDisponivel) ativos++;
+    if (ativos > 0) {
+      contador.classList.remove('hidden');
+      contador.classList.add('flex');
+      contador.textContent = ativos;
+    } else {
+      contador.classList.add('hidden');
+      contador.classList.remove('flex');
+    }
+  };
+
+  window.catalogo_de_servicos_limparFiltros = function() {
+    window.catalogo_de_servicos_categoria = 'todos';
+    window.catalogo_de_servicos_avaliacaoMin = 0;
+    window.catalogo_de_servicos_precoFaixa = 'todos';
+    window.catalogo_de_servicos_somenteDisponivel = false;
+    document.getElementById('catalogo-busca').value = '';
+    catalogo_de_servicos_selecionarCategoria('todos');
+    catalogo_de_servicos_filtroAvaliacao(0);
+    catalogo_de_servicos_filtroPreco('todos');
+    var btn = document.getElementById('catalogo-toggle-disponibilidade');
+    var circle = btn.querySelector('span');
+    btn.classList.remove('bg-marca-600');
+    btn.classList.add('bg-marca-200');
+    circle.style.transform = 'translateX(0)';
+    btn.dataset.ativo = 'false';
+    toast('Filtros limpos com sucesso', 'info');
+    catalogo_de_servicos_aplicarFiltros();
+  };
+
+  window.catalogo_de_servicos_ordenar = function() {
+    var opcoes = ['relevancia', 'menor-preco', 'maior-preco', 'maior-nota', 'mais-avaliacoes'];
+    var labels = ['Relevância', 'Menor preço', 'Maior preço', 'Maior nota', 'Mais avaliações'];
+    var idx = opcoes.indexOf(window.catalogo_de_servicos_ordenacao);
+    idx = (idx + 1) % opcoes.length;
+    window.catalogo_de_servicos_ordenacao = opcoes[idx];
+    catalogo_de_servicos_aplicarFiltros();
+    toast('Ordenado por: ' + labels[idx], 'info');
+  };
+
+  function catalogo_de_servicos_aplicarFiltros() {
+    var lista = catalogo_de_servicos_getFiltrados();
+    catalogo_de_servicos_renderCards(lista);
+  }
+
+  window.catalogo_de_servicos_init = function() {
+    catalogo_de_servicos_aplicarFiltros();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', catalogo_de_servicos_init);
+  } else {
+    catalogo_de_servicos_init();
+  }
+})();
+</script>
+
     <!-- TELAS -->
 
   </main>
