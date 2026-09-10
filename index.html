@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Nexo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            marca: {
+              50: '#f0f3fa', 100: '#dde4f2', 200: '#b8c6e6',
+              300: '#8a9fd4', 400: '#5b78ba', 500: '#3b54a0',
+              600: '#2d4380', 700: '#1f3060', 800: '#15204a',
+              900: '#0b1534',
+            },
+            destaque: {
+              50: '#fdf8ef', 100: '#f9efd0', 200: '#f2dba1',
+              300: '#e9c56d', 400: '#e2b03b', 500: '#c9951a',
+              600: '#a87914', 700: '#7d5a0f', 800: '#5c410c',
+              900: '#3d2b08',
+            },
+            neutro: {
+              50: '#f8f9fb', 100: '#f0f1f5', 200: '#e2e4ec',
+              300: '#c6c9d5', 400: '#9ea2b1', 500: '#7a7d8c',
+              600: '#5c5f6c', 700: '#3d3f4a', 800: '#25262d',
+              900: '#141519',
+            },
+          },
+          fontFamily: { display: ['"Playfair Display"', 'Georgia', 'serif'], body: ['"Source Sans 3"', 'system-ui', 'sans-serif'] },
+          boxShadow: {
+            sm: '0 1px 2px rgba(11,21,52,0.06)',
+            md: '0 4px 12px rgba(11,21,52,0.08)',
+            lg: '0 8px 30px rgba(11,21,52,0.12)',
+            card: '0 1px 3px rgba(11,21,52,0.06), 0 4px 16px rgba(11,21,52,0.04)',
+            nav: '0 -1px 3px rgba(11,21,52,0.06), 0 -4px 16px rgba(11,21,52,0.04)',
+            toast: '0 6px 24px rgba(11,21,52,0.16)',
+          },
+          borderRadius: { card: '12px', btn: '10px' },
+        },
+      },
+    };
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: #1a1d28; }
+    [data-tela]:not(.hidden) { animation: fadeSlide .28s ease-out; }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(-16px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-16px) scale(.96); } }
+    @keyframes modalBg { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modalCard { from { opacity: 0; transform: scale(.94) translateY(14px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: #c6c9d5; border-radius: 3px; }
+    :focus-visible { outline: 2px solid #c9951a; outline-offset: 2px; border-radius: 4px; }
+    .ativo { color: #c9951a !important; }
+    .ativo svg { stroke: #c9951a !important; fill: #c9951a !important; }
+    .nav-btn { position: relative; transition: color .2s ease; }
+    .nav-btn .nav-dot { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: #c9951a; opacity: 0; transition: opacity .2s ease; }
+    .ativo .nav-dot { opacity: 1; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(11,21,52,.06), 0 4px 16px rgba(11,21,52,.04); border: 1px solid #e2e4ec; }
+    .card-interactive { transition: box-shadow .2s ease, transform .15s ease; }
+    .card-interactive:active { transform: scale(.985); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 10px; font-family: 'Source Sans 3', system-ui, sans-serif; font-weight: 600; font-size: 15px; transition: opacity .15s ease, transform .1s ease; cursor: pointer; border: none; }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: linear-gradient(135deg, #2d4380, #3b54a0); color: #fff; }
+    .btn-accent { background: linear-gradient(135deg, #c9951a, #e2b03b); color: #0b1534; }
+    .btn-outline { background: transparent; color: #2d4380; border: 1.5px solid #2d4380; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .badge-success { background: #f0f9f0; color: #1a6b3c; }
+    .badge-warning { background: #fdf8ef; color: #a87914; }
+    .badge-info { background: #f0f3fa; color: #2d4380; }
+    .badge-danger { background: #fef2f2; color: #c53030; }
+    .device-frame { max-width: 390px; margin: 0 auto; min-height: 100dvh; }
+    @media (min-width: 768px) {
+      .device-frame { min-height: auto; border-radius: 36px; border: 6px solid #2a2d3a; margin-top: 24px; margin-bottom: 24px; max-height: 844px; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,.45); }
+    }
+    #toast-container { pointer-events: none; }
+    .toast-item { pointer-events: auto; animation: toastIn .28s ease-out forwards; }
+    .toast-item.removing { animation: toastOut .22s ease-in forwards; }
+    #modal-overlay { animation: modalBg .2s ease-out forwards; }
+    #modal-card { animation: modalCard .28s ease-out forwards; }
+    .avatar { display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; flex-shrink: 0; }
+    .skeleton { background: linear-gradient(90deg, #f0f1f5 25%, #e2e4ec 50%, #f0f1f5 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .input-field { width: 100%; padding: 14px 16px; border: 1.5px solid #e2e4ec; border-radius: 10px; font-family: 'Source Sans 3', system-ui, sans-serif; font-size: 15px; transition: border-color .2s ease, box-shadow .2s ease; background: #fff; color: #141519; }
+    .input-field:focus { outline: none; border-color: #2d4380; box-shadow: 0 0 0 3px rgba(45,67,128,.1); }
+    .section-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; }
+    .search-bar { display: flex; align-items: center; gap: 10px; background: #f0f1f5; border-radius: 10px; padding: 0 14px; }
+    .search-bar input { background: transparent; border: none; padding: 13px 0; font-size: 15px; font-family: 'Source Sans 3', system-ui, sans-serif; width: 100%; }
+    .search-bar input:focus { outline: none; }
+  </style>
+</head>
+<body class="bg-neutro-900 flex justify-center">
+
+<div class="device-frame bg-neutro-50 flex flex-col relative shadow-2xl">
+
+  <!-- Status Bar -->
+  <div class="bg-marca-900 text-white flex items-center justify-between px-7 pt-2 pb-1.5 shrink-0 select-none" style="padding-top: env(safe-area-inset-top, 6px);">
+    <span class="text-xs font-medium tracking-wide">9:41</span>
+    <div class="flex items-center gap-1.5">
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="none"><rect x="0" y="5" width="2.5" height="6" rx=".6" fill="white" opacity=".9"/><rect x="4" y="3.5" width="2.5" height="7.5" rx=".6" fill="white" opacity=".9"/><rect x="8" y="1.5" width="2.5" height="9.5" rx=".6" fill="white" opacity=".9"/><rect x="12" y="0" width="2.5" height="11" rx=".6" fill="white" opacity=".9"/></svg>
+      <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><rect x="0" y="0" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.2" opacity=".7"/><rect x="12.5" y="3" width="1.2" height="3" rx=".3" fill="white" opacity=".7"/><rect x="1" y="1" width="8" height="5" rx=".8" fill="white" opacity=".9"/></svg>
+      <svg width="25" height="11" viewBox="0 0 25 11" fill="none"><rect x="0" y="0" width="22" height="11" rx="2.5" stroke="white" stroke-width="1" opacity=".6"/><rect x="22.5" y="3.5" width="1.5" height="4" rx=".3" fill="white" opacity=".6"/><rect x="1.5" y="1.5" width="15" height="6" rx="1.2" fill="white" opacity=".85"/></svg></div>
+  </div>
+
+  <!-- App Header -->
+  <header id="app-header" class="bg-marca-900 text-white px-5 pt-4 pb-3 shrink-0 flex items-center gap-3">
+    <div class="flex items-center gap-2.5">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#c9951a" opacity=".15"/>
+        <path d="M16 7L24 11.5V20.5L16 25L8 20.5V11.5L16 7Z" stroke="#c9951a" stroke-width="1.8" fill="none"/>
+        <circle cx="16" cy="16" r="4" fill="#c9951a" opacity=".85"/>
+      </svg>
+      <span class="font-display text-lg font-semibold tracking-tight">Nexo</span>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main id="telas" class="flex-1 overflow-y-auto pb-24 bg-neutro-50">
+
+    <!-- TELAS -->
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav id="nav-bar" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] bg-white/95 backdrop-blur-md border-t border-neutro-200 shrink-0 z-50" style="padding-bottom: env(safe-area-inset-bottom, 0);">
+    <div class="flex items-center justify-around py-1.5 px-1">
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="catalogo-de-servicos" onclick="mostrarTela('catalogo-de-servicos')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="text-[10px] font-semibold">Serviços</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="detalhe-do-profissional" onclick="mostrarTela('detalhe-do-profissional')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="text-[10px] font-semibold">Profissional</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="solicitar-orcamento" onclick="mostrarTela('solicitar-orcamento')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="text-[10px] font-semibold">Orçamento</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="meus-pedidos" onclick="mostrarTela('meus-pedidos')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="text-[10px] font-semibold">Pedidos</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="pagamento-e-checkout" onclick="mostrarTela('pagamento-e-checkout')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <span class="text-[10px] font-semibold">Pagamento</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="agenda-do-profissional" onclick="mostrarTela('agenda-do-profissional')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="text-[10px] font-semibold">Agenda</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="painel-do-profissional" onclick="mostrarTela('painel-do-profissional')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span class="text-[10px] font-semibold">Painel</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="notificacoes" onclick="mostrarTela('notificacoes')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a1.94 1.94 0 01-3.46 0"/></svg>
+        <span class="text-[10px] font-semibold">Alertas</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="painel-administrativo" onclick="mostrarTela('painel-administrativo')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span class="text-[10px] font-semibold">Admin</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center gap-0.5 py-1.5 px-2 text-neutro-400 min-w-[60px]" data-nav="meu-perfil" onclick="mostrarTela('meu-perfil')">
+        <span class="nav-dot"></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="text-[10px] font-semibold">Perfil</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 w-[calc(100%-32px)] max-w-[358px]"></div>
+
+  <!-- Modal -->
+  <div id="modal-overlay" class="fixed inset-0 z-[100] hidden bg-black/50 backdrop-blur-sm" onclick="fecharModal()">
+    <div id="modal-card" class="bg-white rounded-2xl w-[calc(100%-32px)] max-w-[358px] max-h-[75vh] flex flex-col m-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 shadow-toast overflow-hidden" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-5 pt-5 pb-3 border-b border-neutro-200 shrink-0">
+        <h3 id="modal-title" class="font-display text-lg font-semibold text-marca-900">Título</h3>
+        <button onclick="fecharModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutro-100 transition-colors text-neutro-500" aria-label="Fechar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="modal-body" class="p-5 overflow-y-auto"></div>
+      <div class="px-5 py-3 border-t border-neutro-200 shrink-0">
+        <button onclick="fecharModal()" class="btn btn-primary w-full text-sm py-3">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function mostrarTela(id) {
+  document.querySelectorAll('[data-tela]').forEach(function(s) { s.classList.toggle('hidden', s.dataset.tela !== id); });
+  document.querySelectorAll('[data-nav]').forEach(function(b) { b.classList.toggle('ativo', b.dataset.nav === id); });
+  window.scrollTo({ top: 0 });
+}
+document.addEventListener('DOMContentLoaded', function() { mostrarTela('catalogo-de-servicos'); });
+
+function brl(valor) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor); }
+function dataBR(iso) { if (!iso) return ''; var d = new Date(iso + 'T00:00:00'); return d.toLocaleDateString('pt-BR'); }
+
+var toastTimer;
+function toast(msg, tipo) {
+  var c = document.getElementById('toast-container');
+  var iconMap = { ok: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>', erro: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>', info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d4380" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' };
+  var bgMap = { ok: '#f0f9f0', erro: '#fef2f2', info: '#f0f3fa' };
+  var el = document.createElement('div');
+  el.className = 'toast-item flex items-center gap-3 px-4 py-3 rounded-xl shadow-toast';
+  el.style.background = bgMap[tipo] || bgMap.info;
+  el.innerHTML = '<div class="shrink-0">' + (iconMap[tipo] || iconMap.info) + '</div><span class="text-sm font-medium text-neutro-800 flex-1">' + msg + '</span>';
+  c.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.add('removing'); setTimeout(function() { el.remove(); }, 220); }, 3000);
+}
+
+function abrirModal(html, titulo) {
+  var overlay = document.getElementById('modal-overlay');
+  document.getElementById('modal-title').textContent = titulo || '';
+  document.getElementById('modal-body').innerHTML = html;
+  overlay.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function fecharModal() {
+  var overlay = document.getElementById('modal-overlay');
+  overlay.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') fecharModal(); });
+</script>
+
+</body>
+</html>
