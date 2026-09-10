@@ -799,6 +799,227 @@
       </script>
     </section>
 
+    <section data-tela="solicitar-orcamento" class="hidden">
+  <div class="px-5 pt-4 pb-6 space-y-5">
+    <div class="flex items-center gap-3">
+      <button onclick="mostrarTela('meus-pedidos')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-gray-200 active:scale-95 transition-all">
+        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      </button>
+      <div>
+        <h2 class="font-display text-lg font-bold text-gray-900 leading-tight">Solicitar Orçamento</h2>
+        <p class="text-xs text-gray-500">Descreva seu projeto e receba propostas</p>
+      </div>
+    </div>
+
+    <div id="orc-info-profissional" class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-gray-100 shadow-sm">
+      <div class="w-11 h-11 rounded-full bg-marca-100 flex items-center justify-center text-marca-700 font-bold text-sm font-display">RC</div>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-sm text-gray-900 truncate">Ricardo Costa</p>
+        <p class="text-xs text-gray-500">Desenvolvedor Full Stack</p>
+      </div>
+      <span class="badge bg-green-50 text-green-700 text-xs px-2.5 py-1 rounded-full font-medium">Disponível</span>
+    </div>
+
+    <form id="form-orcamento" onsubmit="event.preventDefault(); solicitar_orcamento_enviar();" class="space-y-4">
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-800 mb-1.5">Categoria do Serviço <span class="text-red-500">*</span></label>
+        <select id="orc-categoria" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 font-body focus:outline-none focus:ring-2 focus:ring-marca-500 focus:border-transparent appearance-none" style="background-image: url('data:image/svg+xml;utf8,<svg fill=\"%236B7280\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 20px;">
+          <option value="">Selecione uma categoria</option>
+          <option value="desenvolvimento">Desenvolvimento de Software</option>
+          <option value="design">Design UI/UX</option>
+          <option value="marketing">Marketing Digital</option>
+          <option value="consultoria">Consultoria em TI</option>
+          <option value="cloud">Cloud & Infraestrutura</option>
+          <option value="seguranca">Segurança da Informação</option>
+          <option value="dados">Ciência de Dados & IA</option>
+          <option value="suporte">Suporte Técnico</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-800 mb-1.5">Descrição do Projeto <span class="text-red-500">*</span></label>
+        <textarea id="orc-descricao" rows="5" placeholder="Descreva detalhadamente o que precisa: objetivos, funcionalidades esperadas, prazo desejado..." class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 font-body placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-marca-500 focus:border-transparent resize-none"></textarea>
+        <p id="orc-descricao-contador" class="text-xs text-gray-400 mt-1 text-right">0 / 1000</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-800 mb-2">Imagens de Referência <span class="text-gray-400 font-normal">(até 5)</span></label>
+        <div id="orc-imagens-container" class="grid grid-cols-5 gap-2">
+          <button type="button" onclick="solicitar_orcamento_adicionarImagem()" id="orc-btn-upload" class="w-full aspect-square flex flex-col items-center justify-center gap-1 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 hover:border-marca-400 hover:text-marca-500 active:scale-95 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <span class="text-[10px] font-medium">Adicionar</span>
+          </button>
+        </div>
+        <input type="file" id="orc-file-input" accept="image/*" class="hidden" onchange="solicitar_orcamento_processarArquivo(this)">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold text-gray-800 mb-1.5">Data Preferencial <span class="text-red-500">*</span></label>
+          <input type="date" id="orc-data" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 font-body focus:outline-none focus:ring-2 focus:ring-marca-500 focus:border-transparent">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-800 mb-1.5">Orçamento Estimado</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-medium">R$</span>
+            <input type="text" id="orc-orcamento" placeholder="0,00" oninput="solicitar_orcamento_formatarMoeda(this)" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 font-body placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-marca-500 focus:border-transparent">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-800 mb-1.5">Observações Adicionais</label>
+        <textarea id="orc-obs" rows="3" placeholder="Informações complementares, referências de mercado, requisitos específicos..." class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 font-body placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-marca-500 focus:border-transparent resize-none"></textarea>
+      </div>
+
+      <div class="bg-blue-50 border border-blue-100 rounded-xl p-3.5 flex gap-3">
+        <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-3.05 8.25-6.75 8.25c-1.814 0-3.49-.55-4.9-1.49l-2.883-1.44a1.125 1.125 0 01-.912-1.118V8.062c0-.818.559-1.55 1.372-1.66C9.553 6.24 11.116 6 12.75 6c3.7 0 6.75 3.694 6.75 8.25z"/></svg>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-blue-800">Notificações automáticas</p>
+          <p class="text-xs text-blue-600 mt-0.5">O profissional receberá sua solicitação por WhatsApp e Push notification em até 2 minutos.</p>
+        </div>
+      </div>
+
+      <button type="submit" id="orc-btn-enviar" class="w-full py-3.5 bg-marca-700 hover:bg-marca-800 text-white font-semibold text-sm rounded-2xl active:scale-[0.97] transition-all shadow-lg shadow-marca-700/20 flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12z"/></svg>
+        Enviar Solicitação
+      </button>
+    </form>
+  </div>
+</section>
+
+<script>
+(function() {
+  const MAX_IMAGENS = 5;
+  let imagens = [];
+  let primeiraVez = true;
+
+  window.solicitar_orcamento_init = function() {
+    if (primeiraVez) {
+      const hoje = new Date();
+      const minDate = hoje.toISOString().split('T')[0];
+      document.getElementById('orc-data').min = minDate;
+      primeiraVez = false;
+    }
+    imagens = [];
+    solicitar_orcamento_atualizarImagens();
+    document.getElementById('form-orcamento').reset();
+    document.getElementById('orc-descricao-contador').textContent = '0 / 1000';
+  };
+
+  window.solicitar_orcamento_formatarMoeda = function(input) {
+    let val = input.value.replace(/\D/g, '');
+    if (val === '') { input.value = ''; return; }
+    val = (parseInt(val, 10) / 100).toFixed(2);
+    const parts = val.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    input.value = parts.join(',');
+  };
+
+  window.solicitar_orcamento_adicionarImagem = function() {
+    if (imagens.length >= MAX_IMAGENS) {
+      toast('Limite de ' + MAX_IMAGENS + ' imagens atingido', 'erro');
+      return;
+    }
+    document.getElementById('orc-file-input').click();
+  };
+
+  window.solicitar_orcamento_processarArquivo = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { toast('Envie apenas arquivos de imagem', 'erro'); return; }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      if (imagens.length >= MAX_IMAGENS) { toast('Limite de ' + MAX_IMAGENS + ' imagens atingido', 'erro'); return; }
+      imagens.push({ nome: file.name, data: e.target.result });
+      solicitar_orcamento_atualizarImagens();
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  };
+
+  window.solicitar_orcamento_removerImagem = function(index) {
+    imagens.splice(index, 1);
+    solicitar_orcamento_atualizarImagens();
+  };
+
+  function solicitar_orcamento_atualizarImagens() {
+    const container = document.getElementById('orc-imagens-container');
+    const btnUpload = document.getElementById('orc-btn-upload');
+    container.innerHTML = '';
+    imagens.forEach(function(img, i) {
+      const div = document.createElement('div');
+      div.className = 'w-full aspect-square rounded-xl overflow-hidden relative border border-gray-200';
+      div.innerHTML = '<img src="' + img.data + '" class="w-full h-full object-cover" alt="' + img.nome + '"><button type="button" onclick="solicitar_orcamento_removerImagem(' + i + ')" class="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center active:scale-90 transition-all shadow"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+      container.appendChild(div);
+    });
+    if (imagens.length < MAX_IMAGENS) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.onclick = solicitar_orcamento_adicionarImagem;
+      btn.id = 'orc-btn-upload';
+      btn.className = 'w-full aspect-square flex flex-col items-center justify-center gap-1 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 hover:border-marca-400 hover:text-marca-500 active:scale-95 transition-all';
+      btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg><span class="text-[10px] font-medium">Adicionar</span>';
+      container.appendChild(btn);
+    }
+  }
+
+  window.solicitar_orcamento_enviar = function() {
+    const categoria = document.getElementById('orc-categoria').value;
+    const descricao = document.getElementById('orc-descricao').value.trim();
+    const data = document.getElementById('orc-data').value;
+    const orcamento = document.getElementById('orc-orcamento').value;
+    const obs = document.getElementById('orc-obs').value.trim();
+
+    if (!categoria) { toast('Selecione a categoria do serviço', 'erro'); return; }
+    if (!descricao || descricao.length < 20) { toast('Descreva o projeto com pelo menos 20 caracteres', 'erro'); return; }
+    if (!data) { toast('Informe a data preferencial de início', 'erro'); return; }
+    if (!orcamento || orcamento === '0,00') { toast('Informe o orçamento estimado', 'erro'); return; }
+
+    const btn = document.getElementById('orc-btn-enviar');
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Enviando...';
+    btn.classList.add('opacity-75');
+
+    setTimeout(function() {
+      btn.disabled = false;
+      btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12z"/></svg> Enviar Solicitação';
+      btn.classList.remove('opacity-75');
+      toast('Orçamento solicitado com sucesso! O profissional será notificado.', 'ok');
+      setTimeout(function() { mostrarTela('meus-pedidos'); }, 1200);
+    }, 1800);
+  };
+
+  window.solicitar_orcamento_abrirChat = function() {
+    const msg = encodeURIComponent('Olá Ricardo, vi seu perfil no marketplace e gostaria de solicitar um orçamento para um projeto de desenvolvimento.');
+    window.open('https://wa.me/5511999999999?text=' + msg, '_blank');
+  };
+
+  const descTextarea = document.getElementById('orc-descricao');
+  if (descTextarea) {
+    descTextarea.addEventListener('input', function() {
+      const counter = document.getElementById('orc-descricao-contador');
+      if (counter) counter.textContent = this.value.length + ' / 1000';
+    });
+  }
+
+  if (typeof mostrarTela !== 'undefined' && document.querySelector) {
+    const section = document.querySelector('[data-tela="solicitar-orcamento"]');
+    if (section) {
+      const observer = new MutationObserver(function() {
+        if (!section.classList.contains('hidden')) {
+          solicitar_orcamento_init();
+        }
+      });
+      observer.observe(section, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+})();
+</script>
+
     <!-- TELAS -->
 
   </main>
