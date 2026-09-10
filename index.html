@@ -2617,6 +2617,294 @@
   </script>
 </section>
 
+    <section data-tela="painel-administrativo" class="hidden">
+      <div class="mb-5">
+        <div class="flex items-center justify-between mb-1">
+          <div>
+            <h1 class="text-2xl font-display font-bold text-gray-900">Painel Administrativo</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Visão geral da plataforma Connecta+</p>
+          </div>
+          <button onclick="painel_administrativo_exportar()" class="btn btn-primary text-xs px-3 py-2 active:scale-95 transition-transform flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Exportar Relatório
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <div class="card p-4" onclick="painel_administrativo_detalhe('usuarios')">
+          <div class="flex items-center justify-between mb-2">
+            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 014 4V7a4 4 0 11-8 0v-.646a4 4 0 014-4zM6 15a6 6 0 0012 0v2H6v-2z"/></svg>
+            </div>
+            <span class="badge badge-success text-[10px]">+8,2%</span>
+          </div>
+          <p class="text-2xl font-display font-bold text-gray-900" id="metric-usuarios">1.247</p>
+          <p class="text-xs text-gray-500 mt-0.5">Usuários Ativos</p>
+        </div>
+        <div class="card p-4" onclick="painel_administrativo_detalhe('receita')">
+          <div class="flex items-center justify-between mb-2">
+            <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span class="badge badge-success text-[10px]">+12,4%</span>
+          </div>
+          <p class="text-2xl font-display font-bold text-gray-900" id="metric-receita">R$ 89.320</p>
+          <p class="text-xs text-gray-500 mt-0.5">Receita Mensal</p>
+        </div>
+        <div class="card p-4" onclick="painel_administrativo_detalhe('pedidos')">
+          <div class="flex items-center justify-between mb-2">
+            <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            </div>
+            <span class="badge badge-success text-[10px]">+5,1%</span>
+          </div>
+          <p class="text-2xl font-display font-bold text-gray-900" id="metric-pedidos">3.891</p>
+          <p class="text-xs text-gray-500 mt-0.5">Pedidos Totais</p>
+        </div>
+        <div class="card p-4" onclick="painel_administrativo_detalhe('conversao')">
+          <div class="flex items-center justify-between mb-2">
+            <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            </div>
+            <span class="badge badge-warning text-[10px]">-1,3%</span>
+          </div>
+          <p class="text-2xl font-display font-bold text-gray-900" id="metric-conversao">34%</p>
+          <p class="text-xs text-gray-500 mt-0.5">Taxa de Conversão</p>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <div class="card p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-display font-semibold text-gray-900">Receita dos Últimos 30 Dias</h2>
+            <span class="text-xs text-gray-400">Atualizado há 2h</span>
+          </div>
+          <svg class="w-full h-40" viewBox="0 0 340 120" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartArea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="currentColor" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="currentColor" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <g stroke="#e5e7eb" stroke-width="0.5">
+              <line x1="0" y1="30" x2="340" y2="30"/><line x1="0" y1="60" x2="340" y2="60"/><line x1="0" y1="90" x2="340" y2="90"/>
+            </g>
+            <path d="M0,95 C17,88 34,82 51,78 C68,70 85,65 102,60 C119,55 136,48 153,42 C170,38 187,35 204,28 C221,22 238,18 255,15 C272,12 289,18 306,10 C323,5 340,8 340,8 L340,120 L0,120 Z" fill="url(#chartArea)" class="text-emerald-500"/>
+            <path d="M0,95 C17,88 34,82 51,78 C68,70 85,65 102,60 C119,55 136,48 153,42 C170,38 187,35 204,28 C221,22 238,18 255,15 C272,12 289,18 306,10 C323,5 340,8 340,8" fill="none" stroke="currentColor" stroke-width="2.5" class="text-emerald-500"/>
+            <circle cx="170" cy="38" r="3.5" fill="#059669" stroke="white" stroke-width="1.5"/>
+            <circle cx="204" cy="28" r="3.5" fill="#059669" stroke="white" stroke-width="1.5"/>
+            <circle cx="255" cy="15" r="3.5" fill="#059669" stroke="white" stroke-width="1.5"/>
+          </svg>
+          <div class="flex justify-between mt-2">
+            <span class="text-[10px] text-gray-400">01/Dez</span>
+            <span class="text-[10px] text-gray-400">10/Dez</span>
+            <span class="text-[10px] text-gray-400">20/Dez</span>
+            <span class="text-[10px] text-gray-400">31/Dez</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <div class="card p-4">
+          <h2 class="text-sm font-display font-semibold text-gray-900 mb-3">Categorias Mais Contratadas</h2>
+          <svg class="w-28 h-28 mx-auto" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#f3f4f6" stroke-width="14"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#3b82f6" stroke-width="14" stroke-dasharray="71.5 238.8" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#059669" stroke-width="14" stroke-dasharray="52.3 238.8" stroke-dashoffset="-71.5" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#f59e0b" stroke-width="14" stroke-dasharray="38.2 238.8" stroke-dashoffset="-123.8" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#8b5cf6" stroke-width="14" stroke-dasharray="52.3 238.8" stroke-dashoffset="-162" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#e5e7eb" stroke-width="14" stroke-dasharray="24.5 238.8" stroke-dashoffset="-214.3" transform="rotate(-90 50 50)"/>
+          </svg>
+          <div class="space-y-1.5 mt-3">
+            <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>Consultoria <span class="ml-auto font-medium">30%</span></div>
+            <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>Tecnologia <span class="ml-auto font-medium">22%</span></div>
+            <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>Design <span class="ml-auto font-medium">16%</span></div>
+            <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-violet-500"></span>Marketing <span class="ml-auto font-medium">22%</span></div>
+            <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span>Outros <span class="ml-auto font-medium">10%</span></div>
+          </div>
+        </div>
+        <div class="card p-4">
+          <h2 class="text-sm font-display font-semibold text-gray-900 mb-3">Ações Rápidas</h2>
+          <div class="space-y-2.5">
+            <button onclick="mostrarTela('catalogo-de-servicos'); toast('Abrindo catálogo de serviços','info')" class="w-full flex items-center gap-3 p-2.5 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all active:scale-[0.97] text-left">
+              <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              </div>
+              <div><p class="text-xs font-semibold text-gray-900">Catálogo de Serviços</p><p class="text-[10px] text-gray-500">Gerenciar ofertas</p></div>
+            </button>
+            <button onclick="painel_administrativo_modalCategorias()" class="w-full flex items-center gap-3 p-2.5 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all active:scale-[0.97] text-left">
+              <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+              </div>
+              <div><p class="text-xs font-semibold text-gray-900">Gerenciar Categorias</p><p class="text-[10px] text-gray-500">Adicionar ou editar</p></div>
+            </button>
+            <button onclick="painel_administrativo_modalConfig()" class="w-full flex items-center gap-3 p-2.5 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all active:scale-[0.97] text-left">
+              <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                <svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+              <div><p class="text-xs font-semibold text-gray-900">Configurar Plataforma</p><p class="text-[10px] text-gray-500">Ajustes e preferências</p></div>
+            </button>
+            <button onclick="painel_administrativo_modalFinanceiro()" class="w-full flex items-center gap-3 p-2.5 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all active:scale-[0.97] text-left">
+              <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
+                <svg class="w-4.5 h-4.5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div><p class="text-xs font-semibold text-gray-900">Relatórios Financeiros</p><p class="text-[10px] text-gray-500">Análise detalhada</p></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-display font-semibold text-gray-900">Usuários Recentes</h2>
+          <div class="relative">
+            <input type="text" id="filtro-usuarios" placeholder="Buscar usuário..." oninput="painel_administrativo_filtrarUsuarios()" class="text-xs pl-7 pr-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 w-36 placeholder:text-gray-400">
+            <svg class="w-3.5 h-3.5 text-gray-400 absolute left-2 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+        </div>
+        <div class="overflow-x-auto -mx-4 px-4">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="text-gray-400 border-b border-gray-100">
+                <th class="text-left pb-2 font-medium">Usuário</th>
+                <th class="text-left pb-2 font-medium hidden sm:table-cell">E-mail</th>
+                <th class="text-left pb-2 font-medium">Tipo</th>
+                <th class="text-left pb-2 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-usuarios">
+            </tbody>
+          </table>
+        </div>
+        <div id="estado-vazio" class="hidden py-8 text-center">
+          <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <p class="text-xs text-gray-400">Nenhum usuário encontrado</p>
+        </div>
+      </div>
+    </section>
+
+    <script>
+    const painel_administrativo_usuarios = [
+      { nome: 'Marina Costa', email: 'marina.costa@empresa.com', tipo: 'Cliente', status: 'ativo', inicial: 'MC', cor: 'bg-blue-500' },
+      { nome: 'Rafael Oliveira', email: 'rafael.o@gmail.com', tipo: 'Profissional', status: 'ativo', inicial: 'RO', cor: 'bg-emerald-500' },
+      { nome: 'Juliana Santos', email: 'juliana.s@negocio.com', tipo: 'Cliente', status: 'pendente', inicial: 'JS', cor: 'bg-amber-500' },
+      { nome: 'Carlos Mendes', email: 'carlos.m@firma.com', tipo: 'Profissional', status: 'ativo', inicial: 'CM', cor: 'bg-violet-500' },
+      { nome: 'Ana Beatriz', email: 'anab.lima@corp.com', tipo: 'Cliente', status: 'ativo', inicial: 'AB', cor: 'bg-rose-500' },
+      { nome: 'Felipe Almeida', email: 'felipe.a@tech.com', tipo: 'Profissional', status: 'pendente', inicial: 'FA', cor: 'bg-cyan-500' },
+      { nome: 'Patricia Souza', email: 'patricia.s@startup.com', tipo: 'Cliente', status: 'ativo', inicial: 'PS', cor: 'bg-indigo-500' },
+      { nome: 'Diego Ferreira', email: 'diego.f@agencia.com', tipo: 'Profissional', status: 'ativo', inicial: 'DF', cor: 'bg-teal-500' },
+    ];
+
+    function painel_administrativo_renderTabela(lista) {
+      const tbody = document.getElementById('tabela-usuarios');
+      const vazio = document.getElementById('estado-vazio');
+      tbody.innerHTML = '';
+      if (lista.length === 0) {
+        vazio.classList.remove('hidden');
+        return;
+      }
+      vazio.classList.add('hidden');
+      lista.forEach(function(u) {
+        const statusClass = u.status === 'ativo' ? 'badge-success' : 'badge-warning';
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-50 hover:bg-gray-50/50 transition-colors cursor-pointer';
+        tr.onclick = function() { painel_administrativo_detalheUsuario(u); };
+        tr.innerHTML = '<td class="py-2.5 pr-2"><div class="flex items-center gap-2">' +
+          '<div class="w-7 h-7 rounded-full ' + u.cor + ' text-white flex items-center justify-center text-[10px] font-semibold shrink-0">' + u.inicial + '</div>' +
+          '<span class="font-medium text-gray-900 truncate max-w-[100px]">' + u.nome + '</span></div></td>' +
+          '<td class="py-2.5 pr-2 hidden sm:table-cell text-gray-500 truncate max-w-[160px]">' + u.email + '</td>' +
+          '<td class="py-2.5 pr-2 text-gray-600">' + u.tipo + '</td>' +
+          '<td class="py-2.5"><span class="badge ' + statusClass + '">' + (u.status === 'ativo' ? 'Ativo' : 'Pendente') + '</span></td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    function painel_administrativo_filtrarUsuarios() {
+      var q = document.getElementById('filtro-usuarios').value.toLowerCase().trim();
+      var lista = painel_administrativo_usuarios.filter(function(u) {
+        return u.nome.toLowerCase().indexOf(q) !== -1 || u.email.toLowerCase().indexOf(q) !== -1 || u.tipo.toLowerCase().indexOf(q) !== -1;
+      });
+      painel_administrativo_renderTabela(lista);
+    }
+
+    function painel_administrativo_detalheUsuario(u) {
+      var statusText = u.status === 'ativo' ? 'Ativo' : 'Pendente';
+      var html = '<div class="text-center mb-4">' +
+        '<div class="w-14 h-14 rounded-full ' + u.cor + ' text-white flex items-center justify-center text-xl font-semibold mx-auto mb-2">' + u.inicial + '</div>' +
+        '<p class="font-display font-bold text-gray-900">' + u.nome + '</p>' +
+        '<p class="text-xs text-gray-500">' + u.email + '</p>' +
+        '<span class="badge badge-' + (u.status === 'ativo' ? 'success' : 'warning') + ' mt-2 inline-block">' + statusText + '</span>' +
+        '<p class="text-xs text-gray-400 mt-1">Cadastrado em 12/' + ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][Math.floor(Math.random()*12)] + '/2025</p>' +
+        '</div>' +
+        '<div class="space-y-2">' +
+        '<div class="flex justify-between text-xs p-2 bg-gray-50 rounded"><span class="text-gray-500">Tipo de perfil</span><span class="font-medium">' + u.tipo + '</span></div>' +
+        '<div class="flex justify-between text-xs p-2 bg-gray-50 rounded"><span class="text-gray-500">Pedidos realizados</span><span class="font-medium">' + Math.floor(Math.random()*40+5) + '</span></div>' +
+        '<div class="flex justify-between text-xs p-2 bg-gray-50 rounded"><span class="text-gray-500">Valor gasto</span><span class="font-medium">R$ ' + (Math.floor(Math.random()*8000+500)).toLocaleString('pt-BR') + ',00</span></div>' +
+        '</div>' +
+        '<div class="flex gap-2 mt-4">' +
+        '<button onclick="painel_administrativo_toggleStatus(\'' + u.nome + '\'); fecharModal();" class="btn btn-' + (u.status === 'ativo' ? 'warning' : 'success') + ' flex-1 text-xs py-2 active:scale-95 transition-transform">' + (u.status === 'ativo' ? 'Desativar' : 'Ativar') + '</button>' +
+        '<button onclick="fecharModal(); toast('Contato enviado para ' + u.email, 'ok')" class="btn btn-outline flex-1 text-xs py-2 active:scale-95 transition-transform">Enviar E-mail</button>' +
+        '</div>';
+      abrirModal(html, 'Detalhe do Usuário');
+    }
+
+    function painel_administrativo_toggleStatus(nome) {
+      var u = painel_administrativo_usuarios.find(function(x) { return x.nome === nome; });
+      if (u) {
+        u.status = u.status === 'ativo' ? 'pendente' : 'ativo';
+        painel_administrativo_renderTabela(painel_administrativo_usuarios);
+        toast('Status de ' + nome + ' atualizado', 'ok');
+      }
+    }
+
+    function painel_administrativo_detalhe(tipo) {
+      var msgs = { usuarios: '1.247 usuários ativos na plataforma', receita: 'Receita de R$ 89.320 no mês atual', pedidos: '3.891 pedidos processados', conversao: 'Taxa de conversão de 34% — tendência de crescimento' };
+      toast(msgs[tipo] || 'Detalhes carregados', 'info');
+    }
+
+    function painel_administrativo_modalCategorias() {
+      var html = '<div class="space-y-2">' +
+        '<div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg"><div><p class="text-sm font-medium text-gray-900">Consultoria Empresarial</p><p class="text-[10px] text-gray-500">1.204 contratações</p></div><span class="badge badge-success">Ativa</span></div>' +
+        '<div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg"><div><p class="text-sm font-medium text-gray-900">Desenvolvimento Web</p><p class="text-[10px] text-gray-500">892 contratações</p></div><span class="badge badge-success">Ativa</span></div>' +
+        '<div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg"><div><p class="text-sm font-medium text-gray-900">Design Gráfico</p><p class="text-[10px] text-gray-500">756 contratações</p></div><span class="badge badge-success">Ativa</span></div>' +
+        '<div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg"><div><p class="text-sm font-medium text-gray-900">Marketing Digital</p><p class="text-[10px] text-gray-500">634 contratações</p></div><span class="badge badge-success">Ativa</span></div>' +
+        '<div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg"><div><p class="text-sm font-medium text-gray-900">Fotografia</p><p class="text-[10px] text-gray-500">312 contratações</p></div><span class="badge badge-warning">Revisão</span></div>' +
+        '</div>' +
+        '<button onclick="fecharModal(); toast(\'Nova categoria adicionada\', \'ok\')" class="btn btn-primary w-full mt-3 text-xs py-2 active:scale-95 transition-transform">+ Nova Categoria</button>';
+      abrirModal(html, 'Gerenciar Categorias');
+    }
+
+    function painel_administrativo_modalConfig() {
+      var html = '<div class="space-y-3">' +
+        '<div><label class="text-xs font-medium text-gray-700 block mb-1">Nome da Plataforma</label><input type="text" value="Connecta+" class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400"></div>' +
+        '<div><label class="text-xs font-medium text-gray-700 block mb-1">Comissão da Plataforma (%)</label><input type="number" value="10" class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400"></div>' +
+        '<div><label class="text-xs font-medium text-gray-700 block mb-1">Moeda</label><select class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 bg-white"><option>BRL (R$)</option><option>USD ($)</option><option>EUR (€)</option></select></div>' +
+        '<div class="flex items-center justify-between py-2"><span class="text-xs text-gray-700">Notificações Push</span><button onclick="this.classList.toggle(\'bg-marca-600\');this.classList.toggle(\'bg-gray-300\');this.querySelector(\'span\').classList.toggle(\'translate-x-5\');this.querySelector(\'span\').classList.toggle(\'translate-x-0.5\')" class="w-10 h-5 bg-marca-600 rounded-full relative transition-colors"><span class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full translate-x-5 transition-transform shadow"></span></button></div>' +
+        '<div class="flex items-center justify-between py-2"><span class="text-xs text-gray-700">Aprovação manual de profissionais</span><button onclick="this.classList.toggle(\'bg-marca-600\');this.classList.toggle(\'bg-gray-300\');this.querySelector(\'span\').classList.toggle(\'translate-x-5\');this.querySelector(\'span\').classList.toggle(\'translate-x-0.5\')" class="w-10 h-5 bg-marca-600 rounded-full relative transition-colors"><span class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full translate-x-5 transition-transform shadow"></span></button></div>' +
+        '</div>' +
+        '<button onclick="fecharModal(); toast(\'Configurações salvas\', \'ok\')" class="btn btn-primary w-full mt-2 text-xs py-2 active:scale-95 transition-transform">Salvar Configurações</button>';
+      abrirModal(html, 'Configurar Plataforma');
+    }
+
+    function painel_administrativo_modalFinanceiro() {
+      var html = '<div class="space-y-2 mb-3">' +
+        '<div class="flex justify-between p-2.5 bg-emerald-50 rounded-lg"><span class="text-xs text-gray-600">Receita Bruta (Dez/2025)</span><span class="text-sm font-bold text-emerald-700">R$ 89.320,00</span></div>' +
+        '<div class="flex justify-between p-2.5 bg-blue-50 rounded-lg"><span class="text-xs text-gray-600">Taxa de Comissão</span><span class="text-sm font-bold text-blue-700">R$ 8.932,00</span></div>' +
+        '<div class="flex justify-between p-2.5 bg-gray-50 rounded-lg"><span class="text-xs text-gray-600">Repasse a Profissionais</span><span class="text-sm font-bold text-gray-700">R$ 72.560,00</span></div>' +
+        '<div class="flex justify-between p-2.5 bg-amber-50 rounded-lg"><span class="text-xs text-gray-600">A receber</span><span class="text-sm font-bold text-amber-700">R$ 15.480,00</span></div>' +
+        '</div>' +
+        '<button onclick="fecharModal(); toast(\'Relatório financeiro gerado\', \'ok\')" class="btn btn-primary w-full text-xs py-2 active:scale-95 transition-transform">Baixar Relatório CSV</button>';
+      abrirModal(html, 'Relatórios Financeiros');
+    }
+
+    function painel_administrativo_exportar() {
+      toast('Relatório exportado com sucesso', 'ok');
+    }
+
+    painel_administrativo_renderTabela(painel_administrativo_usuarios);
+    </script>
+
     <!-- TELAS -->
 
   </main>
