@@ -1662,6 +1662,380 @@
 })();
 </script>
 
+    <section data-tela="agenda-do-profissional" class="hidden">
+      <div class="agenda-do-profissional-content animate-fadeIn">
+        <!-- Cabeçalho da tela -->
+        <div class="px-5 pt-4 pb-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="font-display text-2xl font-bold text-gray-900 tracking-tight">Agenda</h1>
+              <p class="text-sm text-gray-500 mt-0.5" id="agenda_do_profissional-data-ctx">Terça-feira, 15 de Julho de 2025</p>
+            </div>
+            <button onclick="abrirModal(agenda_do_profissional_modalBloqueio(), 'Adicionar Bloqueio')" class="w-10 h-10 rounded-full bg-marca-600 text-white flex items-center justify-center active:scale-95 transition-transform shadow-lg shadow-marca-600/20">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards indicadores -->
+        <div class="px-5 mb-4">
+          <div class="grid grid-cols-4 gap-2">
+            <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm text-center">
+              <p class="text-lg font-bold text-gray-900">12</p>
+              <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Total</p>
+            </div>
+            <div class="bg-emerald-50 rounded-xl p-3 border border-emerald-100 shadow-sm text-center">
+              <p class="text-lg font-bold text-emerald-700">8</p>
+              <p class="text-[10px] text-emerald-600 font-medium uppercase tracking-wide">Confirmados</p>
+            </div>
+            <div class="bg-amber-50 rounded-xl p-3 border border-amber-100 shadow-sm text-center">
+              <p class="text-lg font-bold text-amber-700">3</p>
+              <p class="text-[10px] text-amber-600 font-medium uppercase tracking-wide">Pendentes</p>
+            </div>
+            <div class="bg-red-50 rounded-xl p-3 border border-red-100 shadow-sm text-center">
+              <p class="text-lg font-bold text-red-700">1</p>
+              <p class="text-[10px] text-red-600 font-medium uppercase tracking-wide">Cancelados</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle mensal / semanal -->
+        <div class="px-5 mb-3">
+          <div class="bg-gray-100 rounded-lg p-1 flex">
+            <button onclick="agenda_do_profissional_setView('mensal')" id="agenda_do_profissional-btn-mensal" class="flex-1 py-1.5 text-xs font-semibold rounded-md transition-all bg-white text-marca-700 shadow-sm">Mensal</button>
+            <button onclick="agenda_do_profissional_setView('semanal')" id="agenda_do_profissional-btn-semanal" class="flex-1 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700">Semanal</button>
+          </div>
+        </div>
+
+        <!-- Calendário -->
+        <div class="px-5 mb-4">
+          <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <!-- Navegação do mês -->
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-50">
+              <button onclick="agenda_do_profissional_changeMonth(-1)" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors active:scale-90">
+                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <span id="agenda_do_profissional-month-label" class="font-display font-bold text-sm text-gray-900">Julho 2025</span>
+              <button onclick="agenda_do_profissional_changeMonth(1)" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors active:scale-90">
+                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+            <!-- Cabeçalho dos dias -->
+            <div class="grid grid-cols-7 px-2 pt-2 pb-1">
+              <span class="text-center text-[10px] font-semibold text-gray-400 uppercase">Dom</span>
+              <span class="text-center text-[10px] font-semibold text-gray-400 uppercase">Seg</span>
+              <span class="text-center text-[10px] font-semibold text-gray-400 uppercase">Ter</span>
+              <span class="text-center text-[10px] font-semibold text-gray-400 uppercase">Qua</span>
+              <span class="text-center text-[10px] font-semibold text-gray-400 uppercase">Qui</span>
+              <span class="text-center text-[10px] font-semibold text-gray-400 uppercase">Sex</span>
+              <span class="text-center text-[10px] font-semibold text-gray-400 uppercase">Sáb</span>
+            </div>
+            <!-- Grade dos dias -->
+            <div id="agenda_do_profissional-calendar-grid" class="grid grid-cols-7 px-2 pb-3 gap-y-1"></div>
+          </div>
+        </div>
+
+        <!-- Legenda -->
+        <div class="px-5 mb-3 flex items-center gap-4">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span class="text-[11px] text-gray-500">Disponível</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-marca-600"></span>
+            <span class="text-[11px] text-gray-500">Agendado</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+            <span class="text-[11px] text-gray-500">Bloqueado</span>
+          </div>
+        </div>
+
+        <!-- Lista de agendamentos do dia -->
+        <div class="px-5 mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-display font-bold text-base text-gray-900">Agendamentos</h2>
+            <span id="agenda_do_profissional-day-label" class="text-xs text-gray-500 font-medium">15 de Julho</span>
+          </div>
+          <div id="agenda_do_profissional-appointments-list" class="space-y-3"></div>
+          <div id="agenda_do_profissional-empty-state" class="hidden text-center py-8">
+            <div class="w-14 h-14 mx-auto rounded-full bg-gray-50 flex items-center justify-center mb-3">
+              <svg class="w-7 h-7 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            <p class="text-sm text-gray-400 font-medium">Nenhum agendamento</p>
+            <p class="text-xs text-gray-300 mt-1">Nenhum compromisso para este dia</p>
+          </div>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        const hoje = new Date();
+        let anoAtual = hoje.getFullYear();
+        let mesAtual = hoje.getMonth();
+        let diaSelecionado = hoje.getDate();
+        let viewMode = 'mensal';
+
+        const agendamentos = [
+          { id: 1, data: formatDate(hoje), hora: '08:00', cliente: 'Ana Carolina Ribeiro', servico: 'Mentoria Individual', status: 'confirmado', avatar: 'AC', corAvatar: 'bg-marca-600' },
+          { id: 2, data: formatDate(hoje), hora: '09:30', cliente: 'Pedro Henrique Costa', servico: 'Consultoria Empresarial', status: 'pendente', avatar: 'PH', corAvatar: 'bg-emerald-600' },
+          { id: 3, data: formatDate(hoje), hora: '11:00', cliente: 'Lucas Ferreira', servico: 'Coaching de Carreira', status: 'confirmado', avatar: 'LF', corAvatar: 'bg-amber-600' },
+          { id: 4, data: formatDate(hoje), hora: '14:00', cliente: 'Juliana Martins', servico: 'Planejamento Financeiro', status: 'pendente', avatar: 'JM', corAvatar: 'bg-rose-600' },
+          { id: 5, data: formatDate(hoje), hora: '15:30', cliente: 'Roberto Almeida', servico: 'Mentoria Individual', status: 'confirmado', avatar: 'RA', corAvatar: 'bg-indigo-600' },
+          { id: 6, data: formatDate(hoje), hora: '17:00', cliente: 'Marina Oliveira', servico: 'Avaliação de Desempenho', status: 'cancelado', avatar: 'MO', corAvatar: 'bg-teal-600' },
+          { id: 7, data: formatDate(addDays(hoje, 1)), hora: '08:30', cliente: 'Carlos Eduardo Lima', servico: 'Consultoria Empresarial', status: 'pendente', avatar: 'CL', corAvatar: 'bg-cyan-700' },
+          { id: 8, data: formatDate(addDays(hoje, 1)), hora: '10:00', cliente: 'Fernanda Souza', servico: 'Coaching de Carreira', status: 'confirmado', avatar: 'FS', corAvatar: 'bg-violet-600' },
+          { id: 9, data: formatDate(addDays(hoje, -1)), hora: '09:00', cliente: 'Thiago Nascimento', servico: 'Mentoria Individual', status: 'confirmado', avatar: 'TN', corAvatar: 'bg-sky-700' },
+          { id: 10, data: formatDate(addDays(hoje, -1)), hora: '14:00', cliente: 'Patrícia Gomes', servico: 'Planejamento Financeiro', status: 'pendente', avatar: 'PG', corAvatar: 'bg-fuchsia-700' },
+          { id: 11, data: formatDate(addDays(hoje, 3)), hora: '08:00', cliente: 'Ricardo Barros', servico: 'Avaliação de Desempenho', status: 'confirmado', avatar: 'RB', corAvatar: 'bg-lime-700' },
+          { id: 12, data: formatDate(addDays(hoje, 5)), hora: '10:30', cliente: 'Amanda Vieira', servico: 'Consultoria Empresarial', status: 'pendente', avatar: 'AV', corAvatar: 'bg-orange-700' },
+        ];
+
+        const bloqueios = [
+          { data: formatDate(hoje), horaInicio: '12:00', horaFim: '13:00', motivo: 'Almoço' },
+          { data: formatDate(addDays(hoje, 1)), horaInicio: '08:00', horaFim: '09:00', motivo: 'Reunião interna' },
+          { data: formatDate(addDays(hoje, 2)), horaInicio: '14:00', horaFim: '17:00', motivo: 'Treinamento' },
+        ];
+
+        function formatDate(d) {
+          const dd = String(d.getDate()).padStart(2, '0');
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          return d.getFullYear() + '-' + mm + '-' + dd;
+        }
+
+        function addDays(d, n) {
+          const r = new Date(d);
+          r.setDate(r.getDate() + n);
+          return r;
+        }
+
+        function isBloqueado(dataStr) {
+          return bloqueios.some(b => b.data === dataStr);
+        }
+
+        function agenda_do_profissional_setView(mode) {
+          viewMode = mode;
+          document.getElementById('agenda_do_profissional-btn-mensal').className = mode === 'mensal'
+            ? 'flex-1 py-1.5 text-xs font-semibold rounded-md transition-all bg-white text-marca-700 shadow-sm'
+            : 'flex-1 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700';
+          document.getElementById('agenda_do_profissional-btn-semanal').className = mode === 'semanal'
+            ? 'flex-1 py-1.5 text-xs font-semibold rounded-md transition-all bg-white text-marca-700 shadow-sm'
+            : 'flex-1 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700';
+          renderCalendar();
+        }
+
+        function agenda_do_profissional_changeMonth(delta) {
+          mesAtual += delta;
+          if (mesAtual > 11) { mesAtual = 0; anoAtual++; }
+          if (mesAtual < 0) { mesAtual = 11; anoAtual--; }
+          renderCalendar();
+        }
+
+        function agenda_do_profissional_selectDay(day) {
+          diaSelecionado = day;
+          renderCalendar();
+          renderAppointments();
+          const dataSel = new Date(anoAtual, mesAtual, day);
+          const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+          document.getElementById('agenda_do_profissional-day-label').textContent = day + ' de ' + meses[dataSel.getMonth()];
+        }
+
+        function renderCalendar() {
+          const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+          document.getElementById('agenda_do_profissional-month-label').textContent = meses[mesAtual] + ' ' + anoAtual;
+          const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
+          const totalDias = new Date(anoAtual, mesAtual + 1, 0).getDate();
+          const grid = document.getElementById('agenda_do_profissional-calendar-grid');
+          grid.innerHTML = '';
+          const hojeStr = formatDate(hoje);
+          for (let i = 0; i < primeiroDia; i++) {
+            const vazio = document.createElement('div');
+            grid.appendChild(vazio);
+          }
+          for (let d = 1; d <= totalDias; d++) {
+            const dataStr = anoAtual + '-' + String(mesAtual + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+            const numAgend = agendamentos.filter(a => a.data === dataStr && a.status !== 'cancelado').length;
+            const isBloq = isBloqueado(dataStr);
+            const isHoje = dataStr === hojeStr;
+            const isSelected = d === diaSelecionado && mesAtual === hoje.getMonth() && anoAtual === hoje.getFullYear();
+            const btn = document.createElement('button');
+            let corFundo = 'bg-white hover:bg-gray-50';
+            let corTexto = 'text-gray-700';
+            let corBorda = '';
+            let badgeHTML = '';
+            if (isBloq) {
+              corFundo = 'bg-red-50 hover:bg-red-100';
+              corTexto = 'text-red-700';
+              corBorda = 'ring-2 ring-red-200';
+              badgeHTML = '<span class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-red-500"></span>';
+            } else if (numAgend > 0) {
+              badgeHTML = '<span class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-marca-600"></span>';
+            }
+            if (isSelected) {
+              corFundo = 'bg-marca-600 text-white';
+              corTexto = 'text-white';
+              corBorda = 'ring-2 ring-marca-300';
+            } else if (isHoje) {
+              corBorda = 'ring-2 ring-marca-400';
+            }
+            btn.className = 'relative aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-all active:scale-95 ' + corFundo + ' ' + corTexto + ' ' + corBorda;
+            btn.innerHTML = '<span class="relative z-10">' + d + '</span>' + badgeHTML;
+            btn.onclick = function() { agenda_do_profissional_selectDay(d); };
+            grid.appendChild(btn);
+          }
+        }
+
+        function agenda_do_profissional_confirmar(id) {
+          const a = agendamentos.find(x => x.id === id);
+          if (a) {
+            a.status = 'confirmado';
+            renderAppointments();
+            renderCalendar();
+            toast('Agendamento confirmado com sucesso!', 'ok');
+          }
+        }
+
+        function agenda_do_profissional_recusar(id) {
+          const a = agendamentos.find(x => x.id === id);
+          if (a) {
+            a.status = 'cancelado';
+            renderAppointments();
+            renderCalendar();
+            toast('Agendamento recusado. O cliente será notificado.', 'info');
+          }
+        }
+
+        function agenda_do_profissional_verDetalhe(id) {
+          const a = agendamentos.find(x => x.id === id);
+          if (!a) return;
+          const statusCor = a.status === 'confirmado' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : a.status === 'pendente' ? 'text-amber-700 bg-amber-50 border-amber-200' : 'text-red-700 bg-red-50 border-red-200';
+          const statusLabel = a.status === 'confirmado' ? 'Confirmado' : a.status === 'pendente' ? 'Pendente' : 'Cancelado';
+          abrirModal(
+            '<div class="space-y-4">' +
+              '<div class="flex items-center gap-3 pb-4 border-b border-gray-100">' +
+                '<div class="w-12 h-12 rounded-full ' + a.corAvatar + ' text-white flex items-center justify-center font-bold text-lg">' + a.avatar + '</div>' +
+                '<div>' +
+                  '<p class="font-display font-bold text-gray-900">' + a.cliente + '</p>' +
+                  '<p class="text-sm text-gray-500">' + a.servico + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="grid grid-cols-2 gap-3">' +
+                '<div class="bg-gray-50 rounded-lg p-3">' +
+                  '<p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wide mb-1">Data</p>' +
+                  '<p class="text-sm font-semibold text-gray-800">' + dataBR(a.data) + '</p>' +
+                '</div>' +
+                '<div class="bg-gray-50 rounded-lg p-3">' +
+                  '<p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wide mb-1">Horário</p>' +
+                  '<p class="text-sm font-semibold text-gray-800">' + a.hora + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="bg-gray-50 rounded-lg p-3">' +
+                '<p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wide mb-1">Status</p>' +
+                '<span class="inline-block px-2.5 py-1 rounded-md text-xs font-semibold border ' + statusCor + '">' + statusLabel + '</span>' +
+              '</div>' +
+              (a.status === 'pendente' ? '<div class="flex gap-2 pt-2">' +
+                '<button onclick="agenda_do_profissional_confirmar(' + a.id + '); fecharModal();" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-transform">Confirmar</button>' +
+                '<button onclick="agenda_do_profissional_recusar(' + a.id + '); fecharModal();" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-transform">Recusar</button>' +
+              '</div>' : '') +
+            '</div>',
+            'Detalhe do Agendamento'
+          );
+        }
+
+        function agenda_do_profissional_adicionarBloqueio() {
+          const data = document.getElementById('agenda-modal-data').value;
+          const inicio = document.getElementById('agenda-modal-inicio').value;
+          const fim = document.getElementById('agenda-modal-fim').value;
+          const motivo = document.getElementById('agenda-modal-motivo').value.trim();
+          if (!data) { toast('Selecione uma data.', 'erro'); return; }
+          if (!inicio || !fim) { toast('Preencha os horários.', 'erro'); return; }
+          if (inicio >= fim) { toast('Horário de fim deve ser após o início.', 'erro'); return; }
+          bloqueios.push({ data: data, horaInicio: inicio, horaFim: fim, motivo: motivo || 'Bloqueio pessoal' });
+          fecharModal();
+          renderCalendar();
+          renderAppointments();
+          toast('Bloqueio adicionado com sucesso!', 'ok');
+        }
+
+        function agenda_do_profissional_modalBloqueio() {
+          const dataSel = formatDate(hoje);
+          return '<div class="space-y-4">' +
+            '<div>' +
+              '<label class="block text-xs font-semibold text-gray-700 mb-1.5">Data</label>' +
+              '<input type="date" id="agenda-modal-data" value="' + dataSel + '" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-marca-500 focus:border-marca-500 outline-none transition-all">' +
+            '</div>' +
+            '<div class="grid grid-cols-2 gap-3">' +
+              '<div>' +
+                '<label class="block text-xs font-semibold text-gray-700 mb-1.5">Horário início</label>' +
+                '<input type="time" id="agenda-modal-inicio" value="09:00" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-marca-500 focus:border-marca-500 outline-none transition-all">' +
+              '</div>' +
+              '<div>' +
+                '<label class="block text-xs font-semibold text-gray-700 mb-1.5">Horário fim</label>' +
+                '<input type="time" id="agenda-modal-fim" value="12:00" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-marca-500 focus:border-marca-500 outline-none transition-all">' +
+              '</div>' +
+            '</div>' +
+            '<div>' +
+              '<label class="block text-xs font-semibold text-gray-700 mb-1.5">Motivo <span class="text-gray-400 font-normal">(opcional)</span></label>' +
+              '<input type="text" id="agenda-modal-motivo" placeholder="Ex: Reunião interna" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-marca-500 focus:border-marca-500 outline-none transition-all placeholder:text-gray-300">' +
+            '</div>' +
+            '<button onclick="agenda_do_profissional_adicionarBloqueio()" class="w-full bg-marca-600 text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform">Salvar Bloqueio</button>' +
+          '</div>';
+        }
+
+        function renderAppointments() {
+          const dataSel = anoAtual + '-' + String(mesAtual + 1).padStart(2, '0') + '-' + String(diaSelecionado).padStart(2, '0');
+          const itens = agendamentos.filter(a => a.data === dataSel);
+          const lista = document.getElementById('agenda_do_profissional-appointments-list');
+          const empty = document.getElementById('agenda_do_profissional-empty-state');
+          lista.innerHTML = '';
+          if (itens.length === 0) {
+            empty.classList.remove('hidden');
+            return;
+          }
+          empty.classList.add('hidden');
+          itens.forEach(a => {
+            const statusConf = a.status === 'confirmado'
+              ? '<span class="badge badge-green">Confirmado</span>'
+              : a.status === 'pendente'
+                ? '<span class="badge badge-yellow">Pendente</span>'
+                : '<span class="badge badge-red">Cancelado</span>';
+            const acoes = a.status === 'pendente'
+              ? '<div class="flex gap-2 mt-3">' +
+                  '<button onclick="agenda_do_profissional_confirmar(' + a.id + '); renderAppointments(); renderCalendar();" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-lg active:scale-95 transition-transform">Confirmar</button>' +
+                  '<button onclick="agenda_do_profissional_recusar(' + a.id + '); renderAppointments(); renderCalendar();" class="flex-1 bg-red-600 text-white text-xs font-semibold py-2 rounded-lg active:scale-95 transition-transform">Recusar</button>' +
+                '</div>'
+              : '';
+            const card = document.createElement('div');
+            card.className = 'card cursor-pointer hover:shadow-md transition-all active:scale-[0.98]';
+            card.onclick = function(e) { if (!e.target.closest('button')) agenda_do_profissional_verDetalhe(a.id); };
+            card.innerHTML =
+              '<div class="flex items-start gap-3">' +
+                '<div class="w-10 h-10 rounded-full ' + a.corAvatar + ' text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">' + a.avatar + '</div>' +
+                '<div class="flex-1 min-w-0">' +
+                  '<div class="flex items-start justify-between gap-2">' +
+                    '<div>' +
+                      '<p class="text-sm font-semibold text-gray-900 truncate">' + a.cliente + '</p>' +
+                      '<p class="text-xs text-gray-500 mt-0.5">' + a.servico + '</p>' +
+                    '</div>' +
+                    '<span class="text-xs font-bold text-marca-600 whitespace-nowrap bg-marca-50 px-2 py-0.5 rounded-md">' + a.hora + '</span>' +
+                  '</div>' +
+                  '<div class="flex items-center justify-between mt-2">' +
+                    statusConf +
+                    '<svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>' +
+                  '</div>' +
+                  acoes +
+                '</div>' +
+              '</div>';
+            lista.appendChild(card);
+          });
+        }
+
+        agenda_do_profissional_selectDay(diaSelecionado);
+        renderAppointments();
+      })();
+      </script>
+    </section>
+
     <!-- TELAS -->
 
   </main>
